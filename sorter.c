@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
             sortedArray = mergeSort(listAsArray, listSize);
         }
 
-        //sorted list is printed to a file
+        //sorted list is printed to a files
         OUTPUT = fopen("output/sorted.txt", "w");
         if (OUTPUT == NULL)
         {
