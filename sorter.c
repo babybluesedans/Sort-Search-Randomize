@@ -105,7 +105,7 @@ int main(int argc, char* argv[])
     //if user selects exit, exit.
     if (listChoice == 3)
     {
-        printf("\nSee you next time!\n");
+        printf("\nSee you next time!!\n");
         return 1;
     }
 
