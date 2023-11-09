@@ -1,5 +1,7 @@
 #include "algos.h"
 
+#undef getrusage
+
 //TODOS
 //implement time for all algos
 //fix scanf nonnumeric char infinite loop bug
@@ -39,6 +41,14 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+    //define before and after times
+    //define time variables
+    struct rusage before, after;
+    double listSizingTime = 0.0;
+    double arrayCreationTime = 0.0;
+    double arraySortingTime = 0.0;
+
+
     //prompt user if they would like to search or sort a list of numbers, or exit
     printf("\nPlease select an option below:\n1) Sort a list\n");
     printf("2) Search for a number in a list\n3) Exit\n\nSelection: ");
@@ -62,21 +72,54 @@ int main(int argc, char* argv[])
         //list is sorted, some type of data structure is created
         if (sortChoice == 1)//selection sort!
         {
+            getrusage(RUSAGE_SELF, &before);//time before
             listSize = findListSize(INPUT);
+            getrusage(RUSAGE_SELF, &after);//time after
+            listSizingTime = calculate(&before, &after);
+
+            getrusage(RUSAGE_SELF, &before);
             int* listAsArray = createArray(INPUT, listSize);
+            getrusage(RUSAGE_SELF, &after);
+            arrayCreationTime = calculate(&before, &after);
+
+            getrusage(RUSAGE_SELF, &before);
             sortedArray = selectionSort(listAsArray, listSize);
+            getrusage(RUSAGE_SELF, &after);
+            arraySortingTime = calculate(&before, &after);
         }
         else if (sortChoice == 2)//bubble sort!
         {
+            getrusage(RUSAGE_SELF, &before);
             listSize = findListSize(INPUT);
+            getrusage(RUSAGE_SELF, &after);
+            listSizingTime = calculate(&before, &after);
+
+            getrusage(RUSAGE_SELF, &before);
             int* listAsArray = createArray(INPUT, listSize);
+            getrusage(RUSAGE_SELF, &after);
+            arrayCreationTime = calculate(&before, &after);
+
+            getrusage(RUSAGE_SELF, &before);
             sortedArray = bubbleSort(listAsArray, listSize);
+            getrusage(RUSAGE_SELF, &after);
+            arraySortingTime = calculate(&before, &after);
         }
         else if (sortChoice == 3)//merge sort!
         {
+            getrusage(RUSAGE_SELF, &before);
             listSize = findListSize(INPUT);
+            getrusage(RUSAGE_SELF, &after);
+            listSizingTime = calculate(&before, &after);
+
+            getrusage(RUSAGE_SELF, &before);
             int* listAsArray = createArray(INPUT, listSize);
+            getrusage(RUSAGE_SELF, &after);
+            arrayCreationTime = calculate(&before, &after);
+
+            getrusage(RUSAGE_SELF, &before);
             sortedArray = mergeSort(listAsArray, listSize);
+            getrusage(RUSAGE_SELF, &after);
+            arraySortingTime = calculate(&before, &after);
         }
 
         //sorted list is printed to a files
@@ -93,6 +136,11 @@ int main(int argc, char* argv[])
         }
 
         //time of sort printed back to user to show success
+        char* sec = "Seconds to ";
+        listSizingTime != 0.0 ? printf("%s size array: %.4f\n", sec, listSizingTime): printf("");
+        arrayCreationTime != 0.0 ? printf("%s size array: %.4f\n", sec, arrayCreationTime): printf("");
+        arraySortingTime != 0.0 ? printf("%s size array: %.4f\n", sec, arraySortingTime): printf("");
+
         //user is prompted if they would like to search for a number from sorted list
 
     }
