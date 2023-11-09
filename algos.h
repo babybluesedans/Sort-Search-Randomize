@@ -12,3 +12,4 @@ int* bubbleSort(int* array, int arrSize);
 int* mergeSort(int* array, int arrSize);
 double calculate(const struct rusage *b, const struct rusage *a);
 void getInput(int *buffer);
+int linearSearch(int target, int* array, int arrSize);
