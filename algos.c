@@ -178,3 +178,15 @@ void getInput(int *buffer)
        ungetc(c, stdin);
     }
 }
+
+int linearSearch(int targetForSearch, int* array, int arrSize)
+{
+    for (int i = 0; i < arrSize; i++)
+    {
+        if(targetForSearch == array[i])
+        {
+            return 1;
+        }
+    }
+    return 0;
+}

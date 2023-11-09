@@ -3,7 +3,6 @@
 #undef getrusage
 
 //TODOS
-//fix scanf nonnumeric char infinite loop bug
 //implement linear and binary search
 //make program continue until exited
 //implement randomize list function
@@ -22,6 +21,10 @@ int main(int argc, char* argv[])
     int* sortedArray = NULL;
     int listSize = 0;
     int sortChoice = 0;
+    int searchChoice = 0;
+    int targetForSearch = INT_MAX;
+    int outputFlag = 0;
+    int searchSuccessful = 0;
     FILE* INPUT = NULL;
     FILE* OUTPUT = NULL;
 
@@ -46,11 +49,11 @@ int main(int argc, char* argv[])
     double listSizingTime = 0.0;
     double arrayCreationTime = 0.0;
     double arraySortingTime = 0.0;
-
+    double searchTime = 0.0;
 
     //prompt user if they would like to search or sort a list of numbers, or exit
     printf("\nPlease select an option below:\n1) Sort a list\n");
-    printf("2) Search for a number in a list\n3) Exit\n\nSelection: ");
+    printf("2) Search for a number in a list\n3) Exit\n\nChoice: ");
 
     while(listChoice < 1 || listChoice > 3)
     {
@@ -133,6 +136,7 @@ int main(int argc, char* argv[])
         {
             fprintf(OUTPUT, "%i\n", sortedArray[index]);
         }
+        outputFlag = 1;
 
         //time of sort printed back to user to show success
         char* time = "Time to";
@@ -146,10 +150,60 @@ int main(int argc, char* argv[])
 
     }
 
-
-
     //if user selects search
-        //use linear search to find item, and print time back to user
+    else if (listChoice == 2)
+    {
+        printf("How would you like to search?\n");
+        printf("\n1) Linear search\n2) Binary Search\n\n");
+        printf("Choice: ");
+        while (searchChoice < 1 || searchChoice > 2)
+        {
+            getInput(&searchChoice);
+        }
+
+        printf("\nWhat number would you like to search for?\n\nNumber: ");
+        while(targetForSearch == INT_MAX)
+        {
+            getInput(&targetForSearch);
+        }
+        
+        if (searchChoice == 1)//linear search :(
+        {
+            getrusage(RUSAGE_SELF, &before);//time before
+            listSize = findListSize(INPUT);
+            getrusage(RUSAGE_SELF, &after);//time after
+            listSizingTime = calculate(&before, &after);
+
+            getrusage(RUSAGE_SELF, &before);
+            int* listAsArray = createArray(INPUT, listSize);
+            getrusage(RUSAGE_SELF, &after);
+            arrayCreationTime = calculate(&before, &after);
+
+            getrusage(RUSAGE_SELF, &before);
+            searchSuccessful = linearSearch(targetForSearch, listAsArray, listSize);
+            getrusage(RUSAGE_SELF, &after);
+            searchTime = calculate(&before, &after);
+        }
+
+        if (searchSuccessful)
+        {
+            printf("%i was found in the list!\n", targetForSearch);
+        }
+        else
+        {
+            printf("%i was not found in the list.\n", targetForSearch);
+        }
+
+        char* time = "Time to";
+        listSizingTime != 0.0 ? printf("%s size array:    %.4f seconds\n", time, listSizingTime): printf("");
+        arrayCreationTime != 0.0 ? printf("%s create array: %.4f seconds\n", time, arrayCreationTime): printf("");
+        searchTime != 0.0 ? printf("%s search array:    %.4f seconds\n", time, searchTime): printf("");
+        double totalTime = (listSizingTime + arrayCreationTime + searchTime);
+        printf("Total Time: %.4f seconds\n", totalTime);
+
+
+
+    }
 
     //if user selects exit, exit.
     if (listChoice == 3)
@@ -160,7 +214,10 @@ int main(int argc, char* argv[])
 
     //cant have a memory leak!
     free(sortedArray);
-    fclose(OUTPUT);
+    if (outputFlag)
+    {
+        fclose(OUTPUT);
+    }
     fclose(INPUT);
 }
 
