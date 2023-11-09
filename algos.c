@@ -167,11 +167,14 @@ double calculate(const struct rusage *b, const struct rusage *a)
 
 void getInput(int *buffer)
 {
-    if (scanf("%i", buffer) == getchar())
+    char c;
+    if (scanf("%i", buffer) == 0)
     {
-        while (*buffer != '\n' || *buffer != EOF)
-        {
-            *buffer = getchar();
-        }
+       c = getchar();
+       while (c != '\n')
+       {
+        c = getchar();
+       }
+       ungetc(c, stdin);
     }
 }
