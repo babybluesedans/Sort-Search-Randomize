@@ -164,3 +164,14 @@ double calculate(const struct rusage *b, const struct rusage *a)
                 / 1000000.0);
     }
 }
+
+void getInput(int *buffer)
+{
+    if (scanf("%i", buffer) == getchar())
+    {
+        while (*buffer != '\n' || *buffer != EOF)
+        {
+            *buffer = getchar();
+        }
+    }
+}

@@ -3,7 +3,6 @@
 #undef getrusage
 
 //TODOS
-//implement time for all algos
 //fix scanf nonnumeric char infinite loop bug
 //implement linear and binary search
 //make program continue until exited
@@ -55,7 +54,7 @@ int main(int argc, char* argv[])
 
     while(listChoice < 1 || listChoice > 3)
     {
-        scanf("%i", &listChoice);
+        getInput(&listChoice);
     }
 
     if (listChoice == 1)//user selected Sort
@@ -65,7 +64,7 @@ int main(int argc, char* argv[])
         printf("2) Bubble sort\n3) Merge sort\n\nChoice: ");
         while (sortChoice < 1 || sortChoice > 3)
         {
-            scanf("%i", &sortChoice);
+            getInput(&sortChoice);
         }
 
 
@@ -136,10 +135,12 @@ int main(int argc, char* argv[])
         }
 
         //time of sort printed back to user to show success
-        char* sec = "Seconds to ";
-        listSizingTime != 0.0 ? printf("%s size array: %.4f\n", sec, listSizingTime): printf("");
-        arrayCreationTime != 0.0 ? printf("%s size array: %.4f\n", sec, arrayCreationTime): printf("");
-        arraySortingTime != 0.0 ? printf("%s size array: %.4f\n", sec, arraySortingTime): printf("");
+        char* time = "Time to";
+        listSizingTime != 0.0 ? printf("%s size array:    %.4f seconds\n", time, listSizingTime): printf("");
+        arrayCreationTime != 0.0 ? printf("%s create array: %.4f seconds\n", time, arrayCreationTime): printf("");
+        arraySortingTime != 0.0 ? printf("%s sort array:    %.4f seconds\n", time, arraySortingTime): printf("");
+        double totalTime = (listSizingTime + arrayCreationTime + arraySortingTime);
+        printf("Total Time: %.4f seconds\n", totalTime);
 
         //user is prompted if they would like to search for a number from sorted list
 
