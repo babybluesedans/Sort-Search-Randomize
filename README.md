@@ -6,7 +6,7 @@ Usage: ./sorter [file-path]
 
 File must be a list of numbers seperated by whitespace values. 
 
-The idea is to create a simple command-line UI where a user can specify a filepath to a file containing
+The idea is to create a simple command-line UI program where a user can specify a filepath to a file containing
 numbers, and either sort it, search for a number inside of it, or randomize it. 
 
 I plan to get a working prototype with a few basic sort/search/randomize functions, and then expound upon
