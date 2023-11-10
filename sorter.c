@@ -3,7 +3,7 @@
 #undef getrusage
 
 //TODOS
-//make program continue until exited
+//implement binary search
 //make more sorting functions!
 
 //--------------------------------------------------------------------------------------------------------------------
