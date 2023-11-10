@@ -1,5 +1,9 @@
 #include "algos.h"
 
+//allocates an array of <size> and reads input file. 
+//reads one character at a time, creates full integer when 
+//blank space or a comma is read and inserts into array
+//returns pointer to created array
 int* createArray(FILE* file, int size)
 {
     rewind(file);
@@ -9,7 +13,7 @@ int* createArray(FILE* file, int size)
     int i = 0;
     while(fread(&tmpInt, sizeof(char), 1, file))
     {
-        if (!isspace(tmpInt))
+        if (!isspace(tmpInt) || tmpInt == ',')
         {
             tmpInt2 = (tmpInt2 * 10) + (tmpInt - '0');
         }
@@ -19,23 +23,30 @@ int* createArray(FILE* file, int size)
             tmpInt2 = 0;
             i++;
         }
+        
     }
     return copiedList;
 }
 
+//reads file and counts commas or blank space
+//returns count of seperate numbers in file
 int findListSize(FILE* file)
 {
     int count = 0;
     char c;
     while (fread(&c, sizeof(char), 1, file))
     {
-        if (isspace(c))
+        if (isspace(c) || c == ',')
         {
             count++;
         }
     }
     return count;
 }
+
+//a nested for loop that iterates through an array to find the lowest number
+//swaps lowest number found by inner for loop with iterator value from outer for loop
+//returns pointer to the now sorted input array
 int* selectionSort(int* array, int arrSize)
 {
     int tmpIndex;
@@ -56,6 +67,9 @@ int* selectionSort(int* array, int arrSize)
     return array;
 }
 
+//iterates through array making a 'swap' every time the current iteration
+//is larger than the current iteration + 1
+//returns pointer to the now sorted input array
 int* bubbleSort(int* array, int arrSize)
 {
     int swaps = 1;
@@ -78,6 +92,14 @@ int* bubbleSort(int* array, int arrSize)
     return array;
 }
 
+//recursively calls itself to cut itself into two arrays, left and right
+//stops when each half only holds 1 number
+//if array is odd (not divisible by two), the extra is always added to left half.
+//sorts each iteration of recursion, starting small and working back to the two halves 
+//of the original array.
+//frees its malloc'd arrays after inserting sorted numbers. 
+//there is a likely less complicated way to do this with one auxillary array but
+//real talk this was just easier to visualize
 int* mergeSort(int* array, int arrSize)
 {
     int leftHalfSize = arrSize / 2;
@@ -149,6 +171,10 @@ int* mergeSort(int* array, int arrSize)
     return array;
 }
 
+//takes arguements of program time before and after a process
+//multiplies the (post-process) user time in seconds by a million, adds the milliseconds
+//subtracts this total from seconds/milliseconds of pre-process user time, then does the
+//same thing with system time, divides by a million, and returns seconds in a sec.millisec format
 double calculate(const struct rusage *b, const struct rusage *a)
 {
     if (a == NULL || b == NULL)
@@ -165,7 +191,11 @@ double calculate(const struct rusage *b, const struct rusage *a)
     }
 }
 
-void getInput(int *buffer)
+//fixes a bug where scanf can 'brick' itself
+//if characters consumed by scanf is 0, assume something went wrong
+//consume the rest of the scanf input with getchar until it hits the '\n'
+//pushes current char back to keyboard input with ungetc
+void getInteger(int *buffer)
 {
     char c;
     if (scanf("%i", buffer) == 0)
@@ -179,6 +209,8 @@ void getInput(int *buffer)
     }
 }
 
+//iterates through array until current iteration matches the targer
+//returns 0 or 1, boolean.
 int linearSearch(int targetForSearch, int* array, int arrSize)
 {
     for (int i = 0; i < arrSize; i++)
@@ -189,4 +221,44 @@ int linearSearch(int targetForSearch, int* array, int arrSize)
         }
     }
     return 0;
+}
+
+int* randomize(int* array, int arrSize)
+{
+    struct timeval current_time;
+    gettimeofday(&current_time, NULL);
+    srand(current_time.tv_usec);
+    for (int i = 0; i < arrSize; i++)
+    {
+        unsigned int g = rand();
+        array[i] = (g % 100000);
+    }
+    return array;
+}
+
+void getString(char** buffer)
+{ 
+    char c;
+    if (scanf(" %[^\n]%*c", *buffer) == 0)
+    {
+       c = getchar();
+       while (c != '\n')
+       {
+        c = getchar();
+       }
+       ungetc(c, stdin);
+    }
+}
+
+void randomizeFile(FILE* file, int size)
+{
+    struct timeval current_time;
+    gettimeofday(&current_time, NULL);
+    srand(current_time.tv_usec);
+    int randNum;
+    for (int i = 0; i < size; i++)
+    {
+        randNum = rand() % 100000;
+        fprintf(file, "%i\n", randNum);
+    }
 }
