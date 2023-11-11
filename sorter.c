@@ -3,7 +3,11 @@
 #undef getrusage
 
 //TODOS
+<<<<<<< HEAD
 //minimize flags
+=======
+//implement binary search
+>>>>>>> origin
 //make more sorting functions!
 
 //--------------------------------------------------------------------------------------------------------------------
