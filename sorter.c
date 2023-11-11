@@ -3,15 +3,11 @@
 #undef getrusage
 
 //TODOS
-<<<<<<< HEAD
 //minimize flags
-=======
-//implement binary search
->>>>>>> origin
 //make more sorting functions!
 
 //--------------------------------------------------------------------------------------------------------------------
-//This program takes a path to a file of a list of numbers as an arguement, and gives the user options to sort the
+//This program takes an optional path to a file of a list of numbers as an arguement, and gives the user options to sort the
 //numbers or search for numbers within the file.The user may also randomize the list.The sorted list will be printed
 //to an output file. Program will remain open until the user decides to exit.
 //--------------------------------------------------------------------------------------------------------------------
@@ -519,7 +515,10 @@ int main(int argc, char* argv[])
     {
         fclose(OUTPUT);
     }
-    fclose(INPUT);
+    if (INPUT != NULL)
+    {
+        fclose(INPUT);
+    }
     free(outputName);
     free(inputName);
     if (bufferStr1 != NULL)
