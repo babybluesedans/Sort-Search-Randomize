@@ -3,7 +3,7 @@
 #undef getrusage
 
 //TODOS
-//make program continue until exited
+//minimize flags
 //make more sorting functions!
 
 //--------------------------------------------------------------------------------------------------------------------
@@ -21,13 +21,17 @@ int main(int argc, char* argv[])
     int sortChoice = 0;
     int searchChoice = 0;
     int randomizerChoice = 0;
+    int createInputChoice = 0;
     int nameChoice = 0;
     int sizeChoice = 0;
     int* sortedArray = NULL;
     int* listAsArray = NULL;
+    char* bufferStr1 = NULL;
+    char* bufferStr2 = NULL;
     int* randomizedArray = NULL;
     int targetForSearch = INT_MAX;
     char* outputName = malloc(sizeof(char) * 26);
+    char* inputName = malloc(sizeof(char) * 26);
     FILE* INPUT = NULL;
     FILE* OUTPUT = NULL;
 
@@ -58,19 +62,66 @@ int main(int argc, char* argv[])
     int newSizeFlag = 0;
     
     //argv[1] will be a file containing numbers seperated by blank characters
-    if (argc != 2)
+    if (argc != 2 && argc != 1)
     {
         printf("Usage ./sorter [image path]\n");
         return 1;
     }
 
-    INPUT = fopen(argv[1], "r");
-
-    if (INPUT == NULL)
+    if (argc == 2)
     {
-        printf("Could not load input file.\n");
-        return 1;
+        INPUT = fopen(argv[1], "r");
+        if (INPUT == NULL)
+        {
+            printf("Could not load input file.\n");
+            return 1;
+        }
     }
+
+    if (argc == 1)
+    {
+        printf("It seems you do not have an input file, would");
+        printf(" you like to create one?\n\n1) Yes\n2) No\n\nChoice: ");
+        while (createInputChoice < 1 || createInputChoice > 2)
+        {
+            getInteger(&createInputChoice);
+        }
+
+        if (createInputChoice == 1)
+        {
+            if (bufferStr1 != NULL)
+            {
+                free(bufferStr1);
+            }
+            bufferStr1 = malloc(sizeof(char) * 26);
+            printf("What would you like to name your input file?\n\n");
+            printf("Name: ");
+            getString(&inputName);
+            sprintf(bufferStr1, "input/%s.txt", inputName);
+            free(inputName);
+            inputName = bufferStr1;
+            INPUT = fopen(inputName, "w");
+
+            printf("\nHow many numbers would you like in your list?\n\n");
+            printf("Size: ");
+            while (inputListSize == 0)
+            {
+                getInteger(&inputListSize);
+            }
+
+            randomizeFile(INPUT, inputListSize);
+            fclose(INPUT);
+            printf("\nList created successfully!\n");
+            INPUT = fopen(inputName, "r");
+            inputFileNeededFlag = 1;
+
+        }
+        else
+        {
+            exitProgramFlag = 1;
+        }
+    }
+
 
     //define before and after times
     //define time variables
@@ -82,10 +133,10 @@ int main(int argc, char* argv[])
     double randomizeTime = 0.0;
     double totalTime = 0.0;
     
-    while(!exitProgramFlag)//actual program
+    while(!exitProgramFlag)//actual program loop 
     {
         //prompt user if they would like to search or sort a list of numbers, or exit
-        printf("\nPlease select an option below:\n1) Sort a list\n");
+        printf("\nPlease select an option below:\n\n1) Sort a list\n");
         printf("2) Search for a number in a list\n3) Randomize a list\n");
         printf("4) Exit\n\nChoice: ");
 
@@ -116,7 +167,7 @@ int main(int argc, char* argv[])
             outputFileNeededFlag = 1;
 
             //user is prompted by a menu with sort options
-            printf("\nSelect one of the sorting options\n1) Selection sort\n");
+            printf("\nSelect one of the sorting options:\n\n1) Selection sort\n");
             printf("2) Bubble sort\n3) Merge sort\n\nChoice: ");
             while (sortChoice < 1 || sortChoice > 3)
             {
@@ -151,7 +202,7 @@ int main(int argc, char* argv[])
                 getInteger(&targetForSearch);
             }
 
-            printf("How would you like to search?\n");
+            printf("How would you like to search?\n\n");
             printf("\n1) Linear search\n2) Binary Search\n\n");
             printf("Choice: ");
             while (searchChoice < 1 || searchChoice > 2)
@@ -168,12 +219,14 @@ int main(int argc, char* argv[])
             else if (searchChoice == 2)
             {
                 binaryFlag = 1;
+                arrayToBeCreatedFlag = 1;
+                listToBeSizedFlag = 1;
             }
         }
         else if (randomizeSelectedFlag)
         {
-            printf("Would you like to:\n1) Randomize input file\n");
-            printf("2) Randomize output file\n");
+            printf("Would you like to:\n\n1) Randomize input file\n");
+            printf("2) Randomize output file\n\nChoice: ");
             while(randomizerChoice < 1 || randomizerChoice > 2)
             {
                 getInteger(&randomizerChoice);
@@ -182,8 +235,8 @@ int main(int argc, char* argv[])
             if (randomizerChoice == 1)
             {
                 overwriteInputFlag = 1;
-                printf("Would you like to use the same size?");
-                printf("\n1) Yes\n2) No\n\nChoice: ");
+                printf("\nWould you like to use the same size?");
+                printf("\n\n1) Yes\n2) No\n\nChoice: ");
                 while (sizeChoice < 1 || sizeChoice > 2)
                 {
                     getInteger(&sizeChoice);
@@ -195,7 +248,8 @@ int main(int argc, char* argv[])
                 }
                 else
                 {
-                    printf("How many numbers would you like in your new list?\n");
+                    inputListSize = 0;
+                    printf("\nHow many numbers would you like in your new list?\n\n");
                     printf("Size: ");
                     while (inputListSize == 0)
                     {
@@ -220,8 +274,12 @@ int main(int argc, char* argv[])
 
         if (outputFileNeededFlag)
         {
-            char* bufferStr = malloc(sizeof(char) * 26);
-            printf("Would you like to name your output file?\n");
+            if (bufferStr2 != NULL)
+            {
+                free(bufferStr2);
+            }
+            bufferStr2 = malloc(sizeof(char) * 26);
+            printf("\nWould you like to name your output file?\n\n");
             printf("1) Yes\n2) no\n\nChoice: ");
             while (nameChoice < 1 || nameChoice > 2)
             {
@@ -237,8 +295,9 @@ int main(int argc, char* argv[])
             {
                 outputName = "output";
             }
-            sprintf(bufferStr, "output/%s.txt", outputName);
-            outputName = bufferStr;
+            sprintf(bufferStr2, "output/%s.txt", outputName);
+            free(outputName);
+            outputName = bufferStr2;
         }
 
         if(overwriteInputFlag)
@@ -247,11 +306,22 @@ int main(int argc, char* argv[])
             {
                 fclose(OUTPUT);
             }
-            OUTPUT = fopen(argv[1], "w");
-            if (OUTPUT == NULL)
+            if (!inputFileNeededFlag)
             {
-                printf("Could not create output file.\n");
-                return 1;
+                OUTPUT = fopen(argv[1], "w");
+                if (OUTPUT == NULL)
+                {
+                    printf("\nCould not create output file.\n");
+                    return 1;
+                }
+            }
+            else
+            {
+                OUTPUT = fopen(inputName, "w");
+                if (OUTPUT == NULL)
+                {
+                    printf("\nCould not create output file.\n");
+                }
             }
         }
 
@@ -320,6 +390,14 @@ int main(int argc, char* argv[])
         {
             getrusage(RUSAGE_SELF, &before);
             searchSuccessfulFlag = linearSearch(targetForSearch, listAsArray, listSize);
+            getrusage(RUSAGE_SELF, &after);
+            searchTime = calculate(&before, &after);
+            listSearchedFlag = 1;
+        }
+        if (binaryFlag)
+        {
+            getrusage(RUSAGE_SELF, &before);
+            searchSuccessfulFlag = binarySearch(targetForSearch, listAsArray, listSize);
             getrusage(RUSAGE_SELF, &after);
             searchTime = calculate(&before, &after);
             listSearchedFlag = 1;
@@ -413,6 +491,7 @@ int main(int argc, char* argv[])
         bubbleFlag = 0;
         mergeFlag = 0;
         listRandomizedFlag = 0;
+        linearFlag = 0;
 
         if(overwriteInputFlag)
         {
@@ -421,6 +500,7 @@ int main(int argc, char* argv[])
             inputListSize = 0;
             overwriteInputFlag = 0;
         }
+
     }
 
     printf("\nSee you next time!!\n");
@@ -437,6 +517,15 @@ int main(int argc, char* argv[])
     }
     fclose(INPUT);
     free(outputName);
+    free(inputName);
+    if (bufferStr1 != NULL)
+    {
+        free(bufferStr1);
+    }
+    if (bufferStr2 != NULL)
+    {
+        free(bufferStr2);
+    }
     return 0;
 }
 

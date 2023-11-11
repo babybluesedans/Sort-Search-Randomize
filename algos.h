@@ -4,6 +4,7 @@
 #include <ctype.h>
 #include <sys/resource.h>
 #include <sys/time.h>
+#include <math.h>
 
 int* createArray(FILE* file, int size);
 int findListSize(FILE* file);
@@ -16,3 +17,4 @@ int linearSearch(int target, int* array, int arrSize);
 int* randomize(int* array, int arrSize);
 void getString(char** buffer);
 void randomizeFile(FILE* file, int size);
+int binarySearch(int target, int* array, int arrSize);

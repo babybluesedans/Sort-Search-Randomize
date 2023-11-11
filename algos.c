@@ -262,3 +262,28 @@ void randomizeFile(FILE* file, int size)
         fprintf(file, "%i\n", randNum);
     }
 }
+
+int binarySearch(int target, int* array, int arrSize)
+{
+    int updatedSize = arrSize / 2;
+    int i = updatedSize - 1;
+
+    while (updatedSize != 0)
+    {
+        if (array[i] == target)
+        {
+            return 1;
+        }
+
+        if (array[i] > target)
+        {
+            i -= (updatedSize / 2);
+        }
+        else if (array[i] < target)
+        {
+            i += (updatedSize / 2);
+        }
+        updatedSize /= 2;
+    }
+    return 0;
+}
